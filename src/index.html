@@ -1,11 +1,630 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        Hello World
-    </body>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>沥青混合料马歇尔配合比设计</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,Segoe UI,Microsoft YaHei,sans-serif}
+body{background:#f7f8fa;padding:20px;color:#222}
+.main{max-width:1200px;margin:0 auto}
+
+.header-title{
+  text-align:center;
+  font-size:22px;
+  font-weight:600;
+  color:#111;
+  margin-bottom:6px;
+}
+
+.header-subtitle{
+  text-align:center;
+  font-size:14px;
+  color:#666;
+  margin-bottom:20px;
+}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:20px;margin-bottom:20px}
+.title{font-size:20px;font-weight:600;margin-bottom:16px;color:#111}
+
+.flex{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;justify-content:flex-start;align-items:center}
+.btn{padding:8px 16px;background:#1677ff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+.btn-success{background:#00b42a}
+.btn-warning{background:#faad14}
+.btn:hover{opacity:.92}
+.table-box{overflow-x:auto;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border:1px solid #e5e7eb;padding:8px;text-align:center}
+th{background:#f9fafb;font-weight:500}
+input{width:100%;min-width:70px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;text-align:center}
+.grid-charts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.chart-item{height:260px}
+.range-chart{height:300px;margin-top:20px}
+.param-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;align-items:center}
+.param-item{display:flex;align-items:center;gap:6px}
+.param-item label{white-space:nowrap;font-size:14px}
+.param-item input{max-width:80px}
+
+.result-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.result-card {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+.result-card.oac1 {
+  border-color: #1677ff;
+  background: #f5f8ff;
+}
+.result-card.oac2 {
+  border-color: #00b42a;
+  background: #f5fff8;
+}
+.result-card.oac-final {
+  border-color: #722ed1;
+  background: #faf5ff;
+}
+.result-card-title {
+  font-size:15px;
+  color:#333;
+  margin-bottom:8px;
+}
+.result-card-value {
+  font-size:28px;
+  font-weight:600;
+}
+.result-card.oac1 .result-card-value {
+  color:#1677ff;
+}
+.result-card.oac2 .result-card-value {
+  color:#00b42a;
+}
+.result-card.oac-final .result-card-value {
+  color:#722ed1;
+}
+.calc-process {
+  background:#f9fafb;
+  padding:16px;
+  border-radius:8px;
+  font-size:15px;
+  line-height:2;
+}
+.calc-section {
+  margin-bottom:16px;
+}
+.calc-section:last-child {
+  margin-bottom:0;
+}
+.calc-title {
+  font-weight:600;
+  font-size:16px;
+  margin-bottom:8px;
+}
+.calc-title.oac1 {
+  color:#1677ff;
+}
+.calc-title.oac2 {
+  color:#00b42a;
+}
+.calc-title.final {
+  color:#722ed1;
+}
+.calc-formula {
+  background:#fff;
+  padding:4px 12px;
+  border-radius:4px;
+  font-family:'Courier New',monospace;
+  margin:8px 0;
+}
+
+.footer {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-top: 30px;
+  padding-bottom: 10px;
+}
+</style>
+</head>
+<body>
+<div class="main">
+
+<div class="header-title">沥青混合料马歇尔配合比设计</div>
+
+<!小字>
+
+<div class="header-subtitle">依据 JTG F40-2004  微信：Un-11-22</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div class="title">【设计控制指标】</div>
+    <div class="flex">
+      <button class="btn" onclick="loadDemo()">示例数据</button>
+      <button class="btn btn-warning" onclick="clearData()">清除数据</button>
+    </div>
+  </div>
+  <div class="param-grid">
+    <div class="param-item">
+      <label>空隙率(%)</label>
+      <input type="number" id="vv_min" placeholder="">
+      <span>~</span>
+      <input type="number" id="vv_max" placeholder="">
+    </div>
+    <div class="param-item">
+      <label>矿料间隙率(%)≥</label>
+      <input type="number" id="vma_min" placeholder="">
+    </div>
+    <div class="param-item">
+      <label>沥青饱和度(%)</label>
+      <input type="number" id="vfa_min" placeholder="">
+      <span>~</span>
+      <input type="number" id="vfa_max" placeholder="">
+    </div>
+    <div class="param-item">
+      <label>稳定度(kN)≥</label>
+      <input type="number" id="ms_min" placeholder="">
+    </div>
+    <div class="param-item">
+      <label>流值(0.1mm)</label>
+      <input type="number" id="fl_min" placeholder="">
+      <span>~</span>
+      <input type="number" id="fl_max" placeholder="">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="title">【马歇尔试验数据】</div>
+  <div class="table-box">
+    <table>
+      <thead>
+        <tr>
+          <th>油石比(%)</th>
+          <th>毛体积密度</th>
+          <th>最大理论密度</th>
+          <th>空隙率(%)</th>
+          <th>矿料间隙率(%)</th>
+          <th>沥青饱和度(%)</th>
+          <th>稳定度(kN)</th>
+          <th>流值(0.1mm)</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody">
+        <tr>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+        </tr>
+        <tr>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+        </tr>
+        <tr>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+        </tr>
+        <tr>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+        </tr>
+        <tr>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+          <td><input oninput="doCalc()"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="title">【最佳油石比计算结果】</div>
+
+  <div class="result-cards">
+    <div class="result-card oac1">
+      <div class="result-card-title">OAC1 (指标中值平均)</div>
+      <div class="result-card-value" id="oac1Value">--</div>
+    </div>
+    <div class="result-card oac2">
+      <div class="result-card-title">OAC2 (合格区间中值)</div>
+      <div class="result-card-value" id="oac2Value">--</div>
+    </div>
+    <div class="result-card oac-final">
+      <div class="result-card-title">推荐最佳油石比</div>
+      <div class="result-card-value" id="finalOacValue">--</div>
+    </div>
+  </div>
+
+  <div class="calc-process" id="calcProcess">
+    请输入试验数据 系统将自动计算
+  </div>
+</div>
+
+<div class="card">
+  <div class="title">【指标曲线图】</div>
+  <div class="grid-charts">
+    <div class="chart-item"><canvas id="c_density"></canvas></div>
+    <div class="chart-item"><canvas id="c_vv"></canvas></div>
+    <div class="chart-item"><canvas id="c_vma"></canvas></div>
+    <div class="chart-item"><canvas id="c_vfa"></canvas></div>
+    <div class="chart-item"><canvas id="c_ms"></canvas></div>
+    <div class="chart-item"><canvas id="c_fl"></canvas></div>
+  </div>
+  <div class="range-chart"><canvas id="c_range"></canvas></div>
+</div>
+
+<!-- 底部版权信息 -->
+<div class="footer">
+Copyright © HPWRHG All Rights Reserved.  版本号：沥青混合料马歇尔配合比设计V1 (20260416)
+</div>
+
+</div>
+
+<script>
+let charts = {};
+
+const colorMap = {
+  density: { color: '#1677ff', label: '密度指标合格区间' },
+  stability: { color: '#faad14', label: '稳定度指标合格区间' },
+  void: { color: '#ff4d4f', label: '空隙率指标合格区间' },
+  vfa: { color: '#13c2c2', label: '沥青饱和度合格区间' },
+  flow: { color: '#a0d911', label: '流值指标合格区间' },
+  common: { color: '#000000', label: '共同合格范围(OAC区间)' }
+};
+
+function initCharts(){
+  const lineOpts = {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    interaction:{intersect:false}
+  };
+
+  charts.density = new Chart(document.getElementById('c_density'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'毛体积密度',data:[],borderColor:colorMap.density.color,borderWidth:3,pointRadius:5,tension:.3}]},
+    options:{...lineOpts,plugins:{title:{display:true,text:'毛体积相对密度'}}}
+  });
+
+  charts.vv = new Chart(document.getElementById('c_vv'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'空隙率',data:[],borderColor:colorMap.void.color,borderWidth:3,pointRadius:5,tension:.3}]},
+    options:{...lineOpts,plugins:{title:{display:true,text:'空隙率(%)'}}}
+  });
+
+  charts.vma = new Chart(document.getElementById('c_vma'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'VMA',data:[],borderColor:'#722ed1',borderWidth:3,pointRadius:5,tension:.3}]},
+    options:{...lineOpts,plugins:{title:{display:true,text:'矿料间隙率(%)'}}}
+  });
+
+  charts.vfa = new Chart(document.getElementById('c_vfa'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'VFA',data:[],borderColor:colorMap.vfa.color,borderWidth:3,pointRadius:5,tension:.3}]},
+    options:{...lineOpts,plugins:{title:{display:true,text:'沥青饱和度(%)'}}}
+  });
+
+  charts.ms = new Chart(document.getElementById('c_ms'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'稳定度',data:[],borderColor:colorMap.stability.color,borderWidth:3,pointRadius:5,tension:.3}]},
+    options:{...lineOpts,plugins:{title:{display:true,text:'稳定度(kN)'}}}
+  });
+
+  charts.fl = new Chart(document.getElementById('c_fl'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:'流值',data:[],borderColor:colorMap.flow.color,borderWidth:3,pointRadius:5,tension:.3}]},
+    options:{...lineOpts,plugins:{title:{display:true,text:'流值(0.1mm)'}}}
+  });
+
+  charts.range = new Chart(document.getElementById('c_range'),{
+    type:'scatter',
+    data:{
+      datasets:[
+        {label:colorMap.density.label,data:[],borderColor:colorMap.density.color,backgroundColor:colorMap.density.color,borderWidth:3,pointRadius:6,showLine:true},
+        {label:colorMap.stability.label,data:[],borderColor:colorMap.stability.color,backgroundColor:colorMap.stability.color,borderWidth:3,pointRadius:6,showLine:true},
+        {label:colorMap.void.label,data:[],borderColor:colorMap.void.color,backgroundColor:colorMap.void.color,borderWidth:3,pointRadius:6,showLine:true},
+        {label:colorMap.vfa.label,data:[],borderColor:colorMap.vfa.color,backgroundColor:colorMap.vfa.color,borderWidth:3,pointRadius:6,showLine:true},
+        {label:colorMap.flow.label,data:[],borderColor:colorMap.flow.color,backgroundColor:colorMap.flow.color,borderWidth:3,pointRadius:6,showLine:true},
+        {label:colorMap.common.label,data:[],borderColor:colorMap.common.color,backgroundColor:colorMap.common.color,borderWidth:3,pointRadius:6,showLine:true}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{
+          display:true,
+          position:'top',
+          labels:{font:{size:12,weight:500},usePointStyle:true}
+        },
+        title:{display:true,text:'综合最佳沥青用量范围图',font:{size:16,weight:600},padding:{bottom:15}}
+      },
+      scales:{
+        y:{
+          min:0.5,
+          max:6.5,
+          ticks:{
+            stepSize:1,
+            callback: function(value) {
+              const yAxisConfig = {
+                6: { text: colorMap.density.label, color: colorMap.density.color },
+                5: { text: colorMap.stability.label, color: colorMap.stability.color },
+                4: { text: colorMap.void.label, color: colorMap.void.color },
+                3: { text: colorMap.vfa.label, color: colorMap.vfa.color },
+                2: { text: colorMap.flow.label, color: colorMap.flow.color },
+                1: { text: colorMap.common.label, color: colorMap.common.color }
+              };
+              return yAxisConfig[value] ? yAxisConfig[value].text : '';
+            },
+            color: function(context) {
+              const value = context.tick.value;
+              const yAxisConfig = {
+                6: colorMap.density.color,
+                5: colorMap.stability.color,
+                4: colorMap.void.color,
+                3: colorMap.vfa.color,
+                2: colorMap.flow.color,
+                1: colorMap.common.color
+              };
+              return yAxisConfig[value] || '#333';
+            },
+            font:{size:13,weight:600},
+            padding:15,
+            align:'start'
+          },
+          grid:{display:false},
+          border:{display:false}
+        },
+        x:{
+          min:3.2,
+          max:5.4,
+          title:{display:true,text:'油石比(%)',font:{size:14,weight:500}},
+          ticks:{stepSize:0.2,font:{size:12}},
+          grid:{color:'#f0f0f0'}
+        }
+      }
+    }
+  });
+}
+
+function loadDemo(){
+
+  const demoData = [
+    [3.3, 2.388,2.576,7.3,14.1,47.9,8.94,17.9],
+    [3.8, 2.407,2.558,5.9,13.7,57.1,13.06,28.6],
+    [4.3, 2.431,2.542,4.3,13.3,67.6,16.01,37.7],
+    [4.8, 2.426,2.523,3.8,13.8,72.4,14.48,42.6],
+    [5.3, 2.421,2.506,3.4,14.5,76.3,11.37,48.2]
+  ];
+  const rows = document.querySelectorAll('#dataBody tr');
+  rows.forEach((tr,i)=>{
+    const inputs = tr.querySelectorAll('input');
+    inputs.forEach((inp,j)=>inp.value=demoData[i][j]);
+  });
+
+  document.getElementById('vv_min').value = 4;
+  document.getElementById('vv_max').value = 6;
+  document.getElementById('vma_min').value = 12;
+  document.getElementById('vfa_min').value = 65;
+  document.getElementById('vfa_max').value = 75;
+  document.getElementById('ms_min').value = 9;
+  document.getElementById('fl_min').value = 30;
+  document.getElementById('fl_max').value = 40;
+
+  doCalc();
+}
+
+function clearData(){
+
+  const inputs = document.querySelectorAll('#dataBody input');
+  inputs.forEach(inp => inp.value = '');
+
+  document.getElementById('vv_min').value = '';
+  document.getElementById('vv_max').value = '';
+  document.getElementById('vma_min').value = '';
+  document.getElementById('vfa_min').value = '';
+  document.getElementById('vfa_max').value = '';
+  document.getElementById('ms_min').value = '';
+  document.getElementById('fl_min').value = '';
+  document.getElementById('fl_max').value = '';
+
+  document.getElementById('oac1Value').textContent = '--';
+  document.getElementById('oac2Value').textContent = '--';
+  document.getElementById('finalOacValue').textContent = '--';
+  document.getElementById('calcProcess').innerHTML = '请输入试验数据，系统将自动计算';
+
+  Object.keys(charts).forEach(key => {
+    if(charts[key].data.datasets){
+      charts[key].data.datasets.forEach(ds => ds.data = []);
+    }
+    charts[key].update();
+  });
+}
+
+function getTableData(){
+  const rows = document.querySelectorAll('#dataBody tr');
+  const data = {pa:[], density:[], vv:[], vma:[], vfa:[], ms:[], fl:[]};
+  rows.forEach(tr=>{
+    const inp = tr.querySelectorAll('input');
+    data.pa.push(parseFloat(inp[0].value)||0);
+    data.density.push(parseFloat(inp[1].value)||0);
+    data.vv.push(parseFloat(inp[3].value)||0);
+    data.vma.push(parseFloat(inp[4].value)||0);
+    data.vfa.push(parseFloat(inp[5].value)||0);
+    data.ms.push(parseFloat(inp[6].value)||0);
+    data.fl.push(parseFloat(inp[7].value)||0);
+  });
+  return data;
+}
+
+function linearInterpolate(xArr, yArr, targetY){
+  for(let i=0; i<xArr.length-1; i++){
+    const y1 = yArr[i], y2 = yArr[i+1];
+    const x1 = xArr[i], x2 = xArr[i+1];
+    if((y1 - targetY) * (y2 - targetY) <= 0){
+      if(y1 === y2) return x1;
+      return x1 + (targetY - y1) * (x2 - x1) / (y2 - y1);
+    }
+  }
+  return targetY < Math.min(...yArr) ? xArr[xArr.length-1] : xArr[0];
+}
+
+function updateLineCharts(data){
+  const labels = data.pa;
+  charts.density.data.labels = labels;
+  charts.vv.data.labels = labels;
+  charts.vma.data.labels = labels;
+  charts.vfa.data.labels = labels;
+  charts.ms.data.labels = labels;
+  charts.fl.data.labels = labels;
+
+  charts.density.data.datasets[0].data = data.density; charts.density.update();
+  charts.vv.data.datasets[0].data = data.vv; charts.vv.update();
+  charts.vma.data.datasets[0].data = data.vma; charts.vma.update();
+  charts.vfa.data.datasets[0].data = data.vfa; charts.vfa.update();
+  charts.ms.data.datasets[0].data = data.ms; charts.ms.update();
+  charts.fl.data.datasets[0].data = data.fl; charts.fl.update();
+}
+
+function doCalc(){
+  const data = getTableData();
+  updateLineCharts(data);
+  const pa = data.pa;
+
+
+  const validData = pa.filter(x => x > 0);
+  if(validData.length < 3) {
+    document.getElementById('oac1Value').textContent = '--';
+    document.getElementById('oac2Value').textContent = '--';
+    document.getElementById('finalOacValue').textContent = '--';
+    document.getElementById('calcProcess').innerHTML = '请输入完整的试验数据（至少3组有效数据）';
+    return;
+  }
+
+  const vvMin = parseFloat(document.getElementById('vv_min').value);
+  const vvMax = parseFloat(document.getElementById('vv_max').value);
+  const vmaMin = parseFloat(document.getElementById('vma_min').value);
+  const vfaMin = parseFloat(document.getElementById('vfa_min').value);
+  const vfaMax = parseFloat(document.getElementById('vfa_max').value);
+  const msMin = parseFloat(document.getElementById('ms_min').value);
+  const flMin = parseFloat(document.getElementById('fl_min').value);
+  const flMax = parseFloat(document.getElementById('fl_max').value);
+
+  const vvMid = (vvMin + vvMax) / 2;
+  const maxMs = Math.max(...data.ms);
+  const flMid = (flMin + flMax) / 2;
+  const vfaMid = (vfaMin + vfaMax) / 2;
+
+  const OR_vv = linearInterpolate(pa, data.vv, vvMid);
+  const OR_stability = linearInterpolate(pa, data.ms, maxMs);
+  const OR_flow = linearInterpolate(pa, data.fl, flMid);
+  const OR_vfa = linearInterpolate(pa, data.vfa, vfaMid);
+
+  const OAC1 = (OR_vv + OR_stability + OR_flow + OR_vfa) / 4;
+
+  const densityRange = [pa[0]-0.1, pa[pa.length-1]+0.1];
+  const msLow = linearInterpolate(pa, data.ms, msMin);
+  const msRange = [msLow, pa[pa.length-1]+0.1];
+  const vvLow = linearInterpolate(pa, data.vv, vvMax);
+  const vvHigh = linearInterpolate(pa, data.vv, vvMin);
+  const vvRange = [vvLow, vvHigh];
+  const vfaLow = linearInterpolate(pa, data.vfa, vfaMin);
+  const vfaHigh = linearInterpolate(pa, data.vfa, vfaMax);
+  const vfaRange = [vfaLow, vfaHigh];
+  const flLow = linearInterpolate(pa, data.fl, flMin);
+  const flHigh = linearInterpolate(pa, data.fl, flMax);
+  const flRange = [flLow, flHigh];
+
+  const OACmin = Math.max(densityRange[0], msRange[0], vvRange[0], vfaRange[0], flRange[0]);
+  const OACmax = Math.min(densityRange[1], msRange[1], vvRange[1], vfaRange[1], flRange[1]);
+  const OAC2 = (OACmin + OACmax) / 2;
+
+  const finalOAC = (OAC1 + OAC2) / 2;
+
+  charts.range.data.datasets[0].data = [{x:densityRange[0],y:6}, {x:densityRange[1],y:6}];
+  charts.range.data.datasets[1].data = [{x:msRange[0],y:5}, {x:msRange[1],y:5}];
+  charts.range.data.datasets[2].data = [{x:vvRange[0],y:4}, {x:vvRange[1],y:4}];
+  charts.range.data.datasets[3].data = [{x:vfaRange[0],y:3}, {x:vfaRange[1],y:3}];
+  charts.range.data.datasets[4].data = [{x:flRange[0],y:2}, {x:flRange[1],y:2}];
+  charts.range.data.datasets[5].data = [{x:OACmin,y:1}, {x:OACmax,y:1}];
+  
+  const allXValues = [
+    densityRange[0], densityRange[1],
+    msRange[0], msRange[1],
+    vvRange[0], vvRange[1],
+    vfaRange[0], vfaRange[1],
+    flRange[0], flRange[1],
+    OACmin, OACmax
+  ];
+  const globalMinX = Math.min(...allXValues);
+  const globalMaxX = Math.max(...allXValues);
+  charts.range.options.scales.x.min = globalMinX - 0.15;
+  charts.range.options.scales.x.max = globalMaxX + 0.15;
+  charts.range.update();
+
+  document.getElementById('oac1Value').textContent = OAC1.toFixed(2) + '%';
+  document.getElementById('oac2Value').textContent = OAC2.toFixed(2) + '%';
+  document.getElementById('finalOacValue').textContent = finalOAC.toFixed(2) + '%';
+
+  document.getElementById('calcProcess').innerHTML = `
+    <div class="calc-section">
+      <div class="calc-title oac1">OAC1 计算：</div>
+      <div>OAC1 为各项指标中值/峰值对应的油石比的平均值</div>
+      <div>1. 空隙率中值(${vvMid.toFixed(0)}%)对应的油石比: OR_vv = ${OR_vv.toFixed(2)}%</div>
+      <div>2. 稳定度最大值(${maxMs.toFixed(2)}kN)对应的油石比: OR_stability = ${OR_stability.toFixed(2)}%</div>
+      <div>3. 流值中值(${flMid.toFixed(0)}(0.1mm))对应的油石比: OR_flow = ${OR_flow.toFixed(2)}%</div>
+      <div>4. 沥青饱和度中值(${vfaMid.toFixed(0)}%)对应的油石比: OR_vfa = ${OR_vfa.toFixed(2)}%</div>
+      <div>5. OAC1 = (${OR_vv.toFixed(2)} + ${OR_stability.toFixed(2)} + ${OR_flow.toFixed(2)} + ${OR_vfa.toFixed(2)}) / 4 = ${OAC1.toFixed(2)}%</div>
+    </div>
+
+    <div class="calc-section">
+      <div class="calc-title oac2">OAC2 计算：</div>
+      <div>OAC2 为所有指标均符合要求的油石比范围的中值</div>
+      <div>1. 所有指标均符合要求的油石比范围: ${OACmin.toFixed(2)}% ~ ${OACmax.toFixed(2)}%</div>
+      <div>2. OAC2 = (${OACmin.toFixed(2)} + ${OACmax.toFixed(2)}) / 2 = ${OAC2.toFixed(2)}%</div>
+    </div>
+
+    <div class="calc-section">
+      <div class="calc-title final">推荐最佳油石比计算：</div>
+      <div>推荐最佳油石比为 OAC1 和 OAC2 的平均值</div>
+      <div>推荐最佳油石比 = (${OAC1.toFixed(2)} + ${OAC2.toFixed(2)}) / 2 = ${finalOAC.toFixed(2)}%</div>
+    </div>
+  `;
+}
+
+window.onload = initCharts;
+</script>
+</body>
 </html>
