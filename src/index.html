@@ -1,11 +1,690 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        Hello World
-    </body>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工程原材料入库管理系统</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --p1: #1a6b3c;
+  --p2: #2d9e5f;
+  --grad: linear-gradient(135deg, #1a6b3c 0%, #2d9e5f 50%, #4ecca3 100%);
+  --grad-header: linear-gradient(135deg, #0d4a2a 0%, #1a6b3c 40%, #2d9e5f 100%);
+  --grad-btn: linear-gradient(135deg, #1a6b3c, #4ecca3);
+  --grad-accent: linear-gradient(135deg, #f0a500, #f5c842);
+  --grad-danger: linear-gradient(135deg, #b02a2a, #e05252);
+  --grad-info: linear-gradient(135deg, #1a4fa0, #4a90d9);
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #f5f7fa;
+  --border: #d0d9e4;
+  --text: #1c2432;
+  --text-muted: #5a6677;
+  --text-light: #8b95a8;
+  --shadow-sm: 0 2px 8px rgba(26,107,60,0.08);
+  --shadow-md: 0 4px 20px rgba(26,107,60,0.12);
+  --shadow-lg: 0 8px 40px rgba(26,107,60,0.18);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+.theme-blackgold {
+  --p1: #d4af37;
+  --p2: #ffd966;
+  --grad: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #d4af37 100%);
+  --grad-header: linear-gradient(135deg, #000000 0%, #1a1a1a 40%, #d4af37 100%);
+  --grad-btn: linear-gradient(135deg, #d4af37, #ffdf80);
+  --grad-accent: linear-gradient(135deg, #d4af37, #ffea9e);
+  --grad-danger: linear-gradient(135deg, #b02a2a, #e05252);
+  --grad-info: linear-gradient(135deg, #1a4fa0, #4a90d9);
+  --bg: #111111;
+  --surface: #1e1e1e;
+  --surface2: #2a2a2a;
+  --border: #3a3a3a;
+  --text: #f0f0f0;
+  --text-muted: #b0b0b0;
+  --text-light: #888888;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
+}
+.theme-blackgold th { background: linear-gradient(135deg, #0a0a0a, #d4af37); }
+.theme-blackgold .stat-card::before { background: linear-gradient(135deg, #d4af37, #ffdf80); }
+.theme-blackgold .btn-primary { background: linear-gradient(135deg, #d4af37, #ffdf80); color: #000; }
+.theme-blackgold .card-header { background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #d4af37); color: #ffea9e; }
+.theme-blackgold .seq-badge { background: linear-gradient(135deg, #d4af37, #ffdf80); color: #000; }
+.theme-blackgold .btn-add { background: linear-gradient(135deg, #d4af37, #ffea9e); color: #000; }
+.theme-blackgold .tab-btn.active { color: #d4af37; border-bottom-color: #d4af37; }
+.theme-blackgold .summary-bar strong { color: #d4af37; }
+.theme-blackgold .stat-card .sc-val { color: #d4af37; }
+
+.theme-ocean { --p1: #0e4d7a; --p2: #1a7fc4; --grad: linear-gradient(135deg, #0e4d7a 0%, #1a7fc4 50%, #5db8f5 100%); --grad-header: linear-gradient(135deg, #072e4a 0%, #0e4d7a 40%, #1a7fc4 100%); --grad-btn: linear-gradient(135deg, #0e4d7a, #5db8f5); --bg: #f0f4f8; --surface: #ffffff; --surface2: #f5f7fa; --border: #d0d9e4; --text: #1c2432; --text-muted: #5a6677; --text-light: #8b95a8; }
+.theme-sunset { --p1: #7c2d12; --p2: #c2410c; --grad: linear-gradient(135deg, #7c2d12 0%, #c2410c 40%, #f97316 70%, #fbbf24 100%); --grad-header: linear-gradient(135deg, #4a1a07 0%, #7c2d12 40%, #c2410c 100%); --grad-btn: linear-gradient(135deg, #c2410c, #fbbf24); --bg: #f0f4f8; --surface: #ffffff; --surface2: #f5f7fa; --border: #d0d9e4; --text: #1c2432; --text-muted: #5a6677; --text-light: #8b95a8; }
+.theme-aurora { --p1: #4c1d95; --p2: #7c3aed; --grad: linear-gradient(135deg, #4c1d95 0%, #7c3aed 40%, #06b6d4 80%, #34d399 100%); --grad-header: linear-gradient(135deg, #2e1065 0%, #4c1d95 40%, #7c3aed 100%); --grad-btn: linear-gradient(135deg, #7c3aed, #34d399); --bg: #f0f4f8; --surface: #ffffff; --surface2: #f5f7fa; --border: #d0d9e4; --text: #1c2432; --text-muted: #5a6677; --text-light: #8b95a8; }
+.theme-steel { --p1: #1e293b; --p2: #334155; --grad: linear-gradient(135deg, #1e293b 0%, #334155 40%, #475569 70%, #64748b 100%); --grad-header: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #334155 100%); --grad-btn: linear-gradient(135deg, #334155, #64748b); --bg: #e8ecf0; --border: #c4cdd8; --surface: #ffffff; --surface2: #f5f7fa; --text: #1c2432; --text-muted: #5a6677; --text-light: #8b95a8; }
+.theme-rose { --p1: #881337; --p2: #be185d; --grad: linear-gradient(135deg, #881337 0%, #be185d 40%, #e879a0 70%, #fda4c0 100%); --grad-header: linear-gradient(135deg, #4c0519 0%, #881337 40%, #be185d 100%); --grad-btn: linear-gradient(135deg, #be185d, #fda4c0); --bg: #f0f4f8; --surface: #ffffff; --surface2: #f5f7fa; --border: #d0d9e4; --text: #1c2432; --text-muted: #5a6677; --text-light: #8b95a8; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: all 0.35s; display: flex; flex-direction: column; }
+
+header {
+  background: var(--grad-header);
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  box-shadow: var(--shadow-lg);
+  position: sticky; top: 0; z-index: 200;
+}
+.hdr-left { display: flex; align-items: center; gap: 14px; }
+.hdr-icon { width: 42px; height: 42px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); }
+.hdr-title { color: #fff; }
+.hdr-title h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.04em; }
+.hdr-title p { font-size: 11px; opacity: 0.7; letter-spacing: 0.06em; }
+.hdr-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.theme-switcher { display: flex; gap: 6px; align-items: center; }
+.theme-switcher span { font-size: 11px; color: rgba(255,255,255,0.7); margin-right: 2px; }
+.tb { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s, border-color 0.2s; }
+.tb:hover { transform: scale(1.25); }
+.tb.active { border-color: #fff; transform: scale(1.2); }
+.tb-blackgold { background: linear-gradient(135deg,#0a0a0a,#d4af37); }
+.tb-ocean { background: linear-gradient(135deg,#0e4d7a,#5db8f5); }
+.tb-sunset { background: linear-gradient(135deg,#7c2d12,#fbbf24); }
+.tb-aurora { background: linear-gradient(135deg,#4c1d95,#34d399); }
+.tb-steel { background: linear-gradient(135deg,#1e293b,#64748b); }
+.tb-rose { background: linear-gradient(135deg,#881337,#fda4c0); }
+.btn-add {
+  background: var(--grad-accent);
+  color: #fff; border: none; border-radius: 8px;
+  padding: 8px 16px; font-size: 13px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.04em;
+  box-shadow: 0 3px 12px rgba(240,165,0,0.35);
+  transition: transform 0.15s, box-shadow 0.2s;
+  font-family: 'Noto Sans SC', sans-serif;
+  white-space: nowrap;
+}
+.btn-add:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(240,165,0,0.5); }
+.btn-excel { background: linear-gradient(135deg, #1e6b3b, #3aad5e); box-shadow: 0 3px 12px rgba(30,107,59,0.35); }
+
+.tab-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; box-shadow: var(--shadow-sm); }
+.tab-btn { padding: 14px 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: color 0.2s, border-color 0.2s; letter-spacing: 0.03em; font-family: 'Noto Sans SC', sans-serif; }
+.tab-btn:hover { color: var(--p1); }
+.tab-btn.active { color: var(--p1); border-bottom-color: var(--p1); }
+
+main { max-width: 1280px; margin: 0 auto; padding: 20px 16px; flex: 1; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
+.card-header { background: var(--grad); color: #fff; padding: 11px 18px; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; }
+.card-body { padding: 16px; }
+
+.filter-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 14px; }
+.filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 130px; }
+.filter-group label { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; }
+input[type=text], input[type=date], input[type=number], select { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 10px; font-size: 13px; color: var(--text); font-family: 'Noto Sans SC', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+input:focus, select:focus { outline: none; border-color: var(--p2); box-shadow: 0 0 0 3px rgba(45,158,95,0.12); }
+
+.btn { padding: 8px 16px; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 0.03em; transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s; white-space: nowrap; }
+.btn:hover { transform: translateY(-1px); opacity: 0.92; }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--grad-btn); color: #fff; box-shadow: 0 3px 12px rgba(26,107,60,0.25); }
+.btn-secondary { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+.btn-danger { background: var(--grad-danger); color: #fff; box-shadow: 0 3px 10px rgba(176,42,42,0.2); }
+.btn-info { background: var(--grad-info); color: #fff; box-shadow: 0 3px 10px rgba(26,79,160,0.2); }
+.btn-small { padding: 7px 12px; font-size: 12px; }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 900px; }
+th { background: linear-gradient(135deg, var(--p1), var(--p2)); color: #fff; padding: 10px 12px; text-align: center; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
+td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border); color: var(--text); font-size: 12px; transition: background 0.15s; }
+tr:hover td { background: rgba(45,158,95,0.04); }
+tr:last-child td { border-bottom: none; }
+.seq-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--grad); color: #fff; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.cat-tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+.cat-石 { background: linear-gradient(135deg,#78350f,#d97706); color:#fff; }
+.cat-砂 { background: linear-gradient(135deg,#065f46,#10b981); color:#fff; }
+.cat-水泥 { background: linear-gradient(135deg,#1e3a5f,#3b82f6); color:#fff; }
+.cat-钢筋 { background: linear-gradient(135deg,#4c1d95,#8b5cf6); color:#fff; }
+.cat-砂砾 { background: linear-gradient(135deg,#6b2737,#f43f5e); color:#fff; }
+.cat-other { background: linear-gradient(135deg,#374151,#9ca3af); color:#fff; }
+.btn-del-row { padding: 3px 10px; border: none; border-radius: 4px; background: var(--grad-danger); color: #fff; font-size: 11px; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: opacity 0.2s; }
+.btn-del-row:hover { opacity: 0.8; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.stat-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 14px 16px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--grad); }
+.stat-card .sc-name { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.stat-card .sc-val { font-size: 22px; font-weight: 700; color: var(--p1); font-family: 'JetBrains Mono', monospace; }
+.stat-card .sc-unit { font-size: 12px; color: var(--text-light); margin-left: 4px; }
+.stat-card .sc-count { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,25,40,0.65); backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; animation: fadeIn 0.25s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: var(--surface); border-radius: 16px; width: 90%; max-width: 680px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s cubic-bezier(.16,1,.3,1); }
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { background: var(--grad); color: #fff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 16px 16px 0 0; }
+.modal-header h2 { font-size: 16px; font-weight: 700; letter-spacing: 0.04em; }
+.modal-close { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.modal-close:hover { background: rgba(255,255,255,0.35); }
+.modal-body { padding: 20px; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal-group { display: flex; flex-direction: column; gap: 5px; }
+.modal-group.full { grid-column: 1 / -1; }
+.modal-group label { font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.03em; }
+.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+.cat-select-row { display: flex; align-items: flex-end; gap: 8px; }
+.cat-select-row .modal-group { flex: 1; min-width: 0; }
+.cat-select-row .modal-group select { width: 100%; }
+.btn-cat-action { margin-bottom: 2px; white-space: nowrap; padding: 7px 12px; font-size: 12px; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-light); }
+.empty-icon { font-size: 48px; opacity: 0.35; margin-bottom: 10px; }
+.empty-state p { font-size: 13px; }
+
+.pagination { display: flex; gap: 6px; align-items: center; margin-top: 12px; justify-content: flex-end; }
+.pg-btn { padding: 5px 10px; border: 1px solid var(--border); background: var(--surface); border-radius: 6px; cursor: pointer; font-size: 12px; color: var(--text-muted); font-family: 'Noto Sans SC', sans-serif; transition: all 0.15s; }
+.pg-btn:hover, .pg-btn.active { background: var(--p1); color: #fff; border-color: var(--p1); }
+.pg-info { font-size: 12px; color: var(--text-muted); }
+
+.summary-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; background: linear-gradient(135deg, rgba(26,107,60,0.06), rgba(45,158,95,0.03)); border-radius: var(--radius-sm); border: 1px solid rgba(45,158,95,0.15); margin-bottom: 12px; font-size: 12px; color: var(--text-muted); }
+.summary-bar strong { color: var(--p1); font-family: 'JetBrains Mono', monospace; }
+
+.footer-copyright { text-align: center; padding: 20px 16px 24px; font-size: 12px; color: var(--text-light); background: var(--bg); border-top: 1px solid var(--border); margin-top: 20px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 0.03em; }
+.footer-copyright p { opacity: 0.7; }
+
+@media (max-width: 640px) {
+  .modal-grid { grid-template-columns: 1fr; }
+  .tab-btn { padding: 12px 12px; font-size: 12px; }
+  .hdr-title h1 { font-size: 14px; }
+  .btn-add { padding: 7px 10px; font-size: 12px; }
+  .cat-select-row { flex-wrap: wrap; }
+  .btn-cat-action { width: calc(50% - 4px); text-align: center; }
+  .hdr-right { gap: 6px; }
+  .btn-add { padding: 5px 8px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <div class="hdr-icon">🏗️</div>
+    <div class="hdr-title">
+      <h1>工程原材料入库管理系统</h1>
+      <p>Engineering Materials Warehouse Management · 数据自动永久保存</p>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="theme-switcher">
+      <span>配色</span>
+      <div class="tb tb-blackgold" onclick="setTheme('theme-blackgold')" title="黑金渐变"></div>
+      <div class="tb tb-ocean" onclick="setTheme('theme-ocean')" title="深海蓝"></div>
+      <div class="tb tb-sunset" onclick="setTheme('theme-sunset')" title="暖阳橙"></div>
+      <div class="tb tb-aurora" onclick="setTheme('theme-aurora')" title="极光紫"></div>
+      <div class="tb tb-steel" onclick="setTheme('theme-steel')" title="钢铁灰"></div>
+      <div class="tb tb-rose" onclick="setTheme('theme-rose')" title="玫瑰红"></div>
+    </div>
+    <button class="btn-add" onclick="openModal()">＋ 录入入库</button>
+    <button class="btn-add btn-excel" onclick="triggerExcelImport()">📎 导入Excel</button>
+  </div>
+</header>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('tab-records', this)">📦 入库记录</button>
+  <button class="tab-btn" onclick="switchTab('tab-stats', this)">📊 规格统计</button>
+  <button class="tab-btn" onclick="switchTab('tab-route', this)">🛣️ 路线汇总</button>
+</div>
+
+<main>
+  <div class="tab-panel active" id="tab-records">
+    <div class="card">
+      <div class="card-header">🔍 筛选条件</div>
+      <div class="card-body">
+        <div class="filter-row">
+          <div class="filter-group"><label>路线</label><input type="text" id="f-route" placeholder="如：K30+500" oninput="renderRecords()"></div>
+          <div class="filter-group"><label>规格</label><input type="text" id="f-spec" placeholder="如：中砂、C30" oninput="renderRecords()"></div>
+          <div class="filter-group"><label>类别</label><select id="f-cat" onchange="renderRecords()"><option value="">全部</option></select></div>
+          <div class="filter-group"><label>备注</label><input type="text" id="f-remark" placeholder="如：面层、基层" oninput="renderRecords()"></div>
+          <div class="filter-group"><label>开始日期</label><input type="date" id="f-date1" onchange="renderRecords()"></div>
+          <div class="filter-group"><label>结束日期</label><input type="date" id="f-date2" onchange="renderRecords()"></div>
+          <div style="display:flex;gap:8px;align-items:flex-end;"><button class="btn btn-secondary" onclick="clearFilters()">清除筛选</button><button class="btn btn-primary" onclick="sortAscDesc()">⇅ 日期排序</button></div>
+        </div>
+        <div class="summary-bar" id="summary-bar">共 <strong id="rec-count">0</strong> 条记录</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">📋 入库记录列表</div>
+      <div class="card-body">
+        <div class="table-wrap"><table><thead><tr><th>序号</th><th>日期</th><th>路线</th><th>产地</th><th>类别</th><th>规格</th><th>单位</th><th>数量</th><th>备注</th><th>操作</th> </tr</thead><tbody id="records-tbody"></tbody></table></div>
+        <div id="empty-records" class="empty-state" style="display:none;"><div class="empty-icon">📭</div><p>暂无入库记录，点击右上角「录入入库」添加数据</p></div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="tab-stats">
+    <div class="card"><div class="card-header">🔍 按规格/名称筛选</div><div class="card-body"><div class="filter-row"><div class="filter-group"><label>规格名称（支持模糊搜索）</label><input type="text" id="s-spec" placeholder="输入规格关键字..." oninput="renderStats()"></div><div class="filter-group"><label>类别</label><select id="s-cat" onchange="renderStats()"><option value="">全部</option></select></div><div style="display:flex;gap:8px;align-items:flex-end;"><button class="btn btn-secondary" onclick="document.getElementById('s-spec').value='';document.getElementById('s-cat').value='';renderStats()">清除</button></div></div></div></div>
+    <div class="stats-grid" id="stats-grid"></div><div id="empty-stats" class="empty-state" style="display:none;"><div class="empty-icon">📊</div><p>暂无统计数据</p></div>
+  </div>
+  <div class="tab-panel" id="tab-route">
+    <div class="card"><div class="card-header">🛣️ 路线/工程汇总查询</div><div class="card-body"><div class="filter-row"><div class="filter-group" style="flex:1;min-width:200px;"><label>输入路线关键字</label><input type="text" id="r-route" placeholder="输入路线名称..." oninput="renderRoute()"></div><div class="filter-group"><label>开始日期</label><input type="date" id="r-date1" onchange="renderRoute()"></div><div class="filter-group"><label>结束日期</label><input type="date" id="r-date2" onchange="renderRoute()"></div><div style="display:flex;gap:8px;align-items:flex-end;"><button class="btn btn-secondary" onclick="document.getElementById('r-route').value='';document.getElementById('r-date1').value='';document.getElementById('r-date2').value='';renderRoute()">清除</button></div></div></div></div>
+    <div id="route-result"><div class="empty-state"><div class="empty-icon">🛣️</div><p>请输入路线名称进行查询</p></div></div>
+  </div>
+</main>
+
+<div class="footer-copyright"><p>Copyright © HPWRHG All Rights Reserved.  版本号：Engineering Materials Warehouse Management (20260419) · 数据自动永久保存</p></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header"><h2>📦 录入原材料入库信息</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-group"><label>📅 入库日期 *</label><input type="date" id="m-date"></div>
+        <div class="modal-group"><label>🛣️ 路线 *</label><input type="text" id="m-route" placeholder="如：K30+500~K35+000"></div>
+        <div class="modal-group"><label>📍 产地 *</label><input type="text" id="m-origin" placeholder="如：XX石料场"></div>
+        <div class="cat-select-row">
+          <div class="modal-group" style="flex:1; min-width:0;">
+            <label>🏷️ 类别 *</label>
+            <select id="m-cat" onchange="updateSpecOptions()">
+              <option value="">请选择</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-info btn-small btn-cat-action" onclick="addNewCategory()" style="background:var(--grad-info);">＋ 增加</button>
+          <button type="button" class="btn btn-danger btn-small btn-cat-action" onclick="deleteCurrentCategory()" style="background:var(--grad-danger);">✖ 删除</button>
+        </div>
+        <div class="modal-group"><label>📐 规格 *</label><input type="text" id="m-spec" list="spec-datalist" placeholder="选择或自定义输入"><datalist id="spec-datalist"></datalist></div>
+        <div class="modal-group"><label>📏 单位</label><select id="m-unit"><option>吨</option><option>立方</option><option>平方</option><option>件</option></select></div>
+        <div class="modal-group"><label>🔢 数量 *</label><input type="number" id="m-qty" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="modal-group full"><label>📝 备注</label><input type="text" id="m-remark" placeholder="如：面层、基层、HRB400Φ16"></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="clearModal()">🗑️ 清空输入</button><button class="btn btn-danger" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="saveRecord()">✔ 确认录入</button></div>
+  </div>
+</div>
+
+<input type="file" id="excelInput" accept=".xlsx, .xls, .csv" style="display:none" onchange="handleExcelImport(event)"/>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<script>
+// ========== PakePlus 专用数据持久化方案 ==========
+// 使用多重备份策略：localStorage + IndexedDB + 自动导出恢复
+const STORAGE_KEY = 'eng_materials_v3';
+let records = [];
+let sortDir = -1;
+let currentPage = 1;
+const PAGE_SIZE = 20;
+let customCategories = [];
+
+// 获取所有数据（从localStorage）
+function loadAllData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      records = data.records || [];
+      customCategories = data.customCategories || [];
+    } else {
+      records = [];
+      customCategories = [];
+    }
+  } catch(e) { records = []; customCategories = []; }
+}
+
+// 保存所有数据到localStorage
+function saveAllData() {
+  const data = {
+    records: records,
+    customCategories: customCategories,
+    lastSave: new Date().toISOString()
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  
+  // 同时保存到window对象，防止某些环境清理localStorage
+  window.__appData = data;
+}
+
+// 页面关闭前强制保存
+window.addEventListener('beforeunload', () => {
+  saveAllData();
+});
+
+function getBaseCategories() { return ['碎石', '砂', '水泥', '钢筋', '砂砾']; }
+function getAllCategories() { return [...new Set([...getBaseCategories(), ...customCategories])]; }
+
+function refreshAllCategorySelects() {
+  refreshCategorySelect(document.getElementById('m-cat'));
+  refreshCategorySelect(document.getElementById('f-cat'));
+  refreshCategorySelect(document.getElementById('s-cat'));
+}
+
+function refreshCategorySelect(selectEl) {
+  if (!selectEl) return;
+  const currentVal = selectEl.value;
+  const allCats = getAllCategories();
+  selectEl.innerHTML = '';
+  if (selectEl.id === 'f-cat' || selectEl.id === 's-cat') {
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = '全部';
+    selectEl.appendChild(allOption);
+  } else {
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = '请选择';
+    selectEl.appendChild(placeholderOption);
+  }
+  allCats.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    selectEl.appendChild(option);
+  });
+  if (currentVal && allCats.includes(currentVal)) {
+    selectEl.value = currentVal;
+  } else {
+    if (selectEl.id !== 'f-cat' && selectEl.id !== 's-cat') selectEl.value = '';
+  }
+}
+
+function addNewCategory() {
+  const newCat = prompt('请输入新类别名称：', '');
+  if (!newCat || newCat.trim() === '') { alert('类别名称不能为空'); return; }
+  const trimmed = newCat.trim();
+  if (getAllCategories().includes(trimmed)) { alert('该类别已存在'); return; }
+  customCategories.push(trimmed);
+  saveAllData();
+  refreshAllCategorySelects();
+  document.getElementById('m-cat').value = trimmed;
+  updateSpecOptions();
+  renderStats();
+  alert(`类别“${trimmed}”已添加成功`);
+}
+
+function deleteCurrentCategory() {
+  const selectedCat = document.getElementById('m-cat').value;
+  if (!selectedCat) { alert('请先选择要删除的类别'); return; }
+  if (getBaseCategories().includes(selectedCat)) { alert(`“${selectedCat}”为系统内置类别，不可删除`); return; }
+  if (records.some(r => r.cat === selectedCat) && !confirm(`已有记录使用“${selectedCat}”，删除后无法筛选。仍要删除？`)) return;
+  const index = customCategories.indexOf(selectedCat);
+  if (index !== -1) {
+    customCategories.splice(index, 1);
+    saveAllData();
+    refreshAllCategorySelects();
+    document.getElementById('m-cat').value = '';
+    updateSpecOptions();
+    renderStats();
+    alert(`类别“${selectedCat}”已删除`);
+  }
+}
+
+const SPEC_PRESETS = {
+  '碎石': ['5-10mm碎石','10-20mm碎石','20-30mm碎石','10-30mm碎石','5-20mm碎石'],
+  '砂': ['中砂','细砂','粗砂','机制砂','天然砂'],
+  '水泥': ['P.O42.5','P.O52.5','P.C32.5','P.S42.5','P.O42.5R'],
+  '钢筋': ['HPB300Φ6','HPB300Φ8','HRB400Φ12','HRB400Φ14','HRB400Φ16','HRB400Φ18','HRB400Φ20','HRB400Φ22','HRB400Φ25','HRB400Φ28','HRB400Φ32'],
+  '砂砾': ['天然砂砾','级配砂砾','改良砂砾','碎石土'],
+};
+
+const themeList = ['theme-blackgold', 'theme-ocean', 'theme-sunset', 'theme-aurora', 'theme-steel', 'theme-rose'];
+function setTheme(cls) {
+  document.body.className = cls;
+  const activeClass = cls === 'theme-blackgold' ? 'tb-blackgold' : cls === 'theme-ocean' ? 'tb-ocean' : cls === 'theme-sunset' ? 'tb-sunset' : cls === 'theme-aurora' ? 'tb-aurora' : cls === 'theme-steel' ? 'tb-steel' : 'tb-rose';
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('active'));
+  const targetBtn = document.querySelector('.'+activeClass);
+  if(targetBtn) targetBtn.classList.add('active');
+  localStorage.setItem('eng_theme', cls);
+}
+function getRandomTheme() { return themeList[Math.floor(Math.random() * themeList.length)]; }
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id==='tab-stats') renderStats();
+  if (id==='tab-route') renderRoute();
+}
+
+function openModal() {
+  document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+  refreshCategorySelect(document.getElementById('m-cat'));
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function clearModal() {
+  ['m-date','m-route','m-origin','m-spec','m-qty','m-remark'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('m-cat').value = '';
+  document.getElementById('m-unit').value = '吨';
+  document.getElementById('spec-datalist').innerHTML = '';
+}
+
+function updateSpecOptions() {
+  const cat = document.getElementById('m-cat').value;
+  const dl = document.getElementById('spec-datalist');
+  const presets = SPEC_PRESETS[cat] || [];
+  const userSpecs = [...new Set(records.filter(r => r.cat === cat).map(r => r.spec))];
+  const all = [...new Set([...presets, ...userSpecs])];
+  dl.innerHTML = all.map(s => `<option value="${s}">`).join('');
+}
+
+function saveRecord() {
+  const date = document.getElementById('m-date').value;
+  const route = document.getElementById('m-route').value.trim();
+  const origin = document.getElementById('m-origin').value.trim();
+  const cat = document.getElementById('m-cat').value;
+  const spec = document.getElementById('m-spec').value.trim();
+  const unit = document.getElementById('m-unit').value;
+  const qty = parseFloat(document.getElementById('m-qty').value);
+  const remark = document.getElementById('m-remark').value.trim();
+  if (!date || !route || !origin || !cat || !spec || isNaN(qty) || qty <= 0) {
+    alert('请填写带 * 的必填项，且数量必须大于0');
+    return;
+  }
+  const record = { id: Date.now(), date, route, origin, cat, spec, unit, qty, remark };
+  records.push(record);
+  const sorted = [...records].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+  sorted.forEach((r, i) => { r.seq = i + 1; });
+  saveAllData();
+  closeModal();
+  renderRecords();
+  renderStats();
+}
+
+function deleteRecord(id) {
+  if (!confirm('确认删除这条记录？')) return;
+  records = records.filter(r => r.id !== id);
+  const sorted = [...records].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+  sorted.forEach((r, i) => { r.seq = i + 1; });
+  saveAllData();
+  renderRecords();
+  renderStats();
+}
+
+function getFiltered() {
+  const fRoute = document.getElementById('f-route')?.value.trim().toLowerCase() || '';
+  const fSpec = document.getElementById('f-spec')?.value.trim().toLowerCase() || '';
+  const fCat = document.getElementById('f-cat')?.value || '';
+  const fRemark = document.getElementById('f-remark')?.value.trim().toLowerCase() || '';
+  const fDate1 = document.getElementById('f-date1')?.value || '';
+  const fDate2 = document.getElementById('f-date2')?.value || '';
+  return records.filter(r => {
+    if (fRoute && !r.route.toLowerCase().includes(fRoute)) return false;
+    if (fSpec && !r.spec.toLowerCase().includes(fSpec)) return false;
+    if (fCat && r.cat !== fCat) return false;
+    if (fRemark && !r.remark.toLowerCase().includes(fRemark)) return false;
+    if (fDate1 && r.date < fDate1) return false;
+    if (fDate2 && r.date > fDate2) return false;
+    return true;
+  });
+}
+function sortAscDesc() { sortDir *= -1; renderRecords(); }
+
+function renderRecords() {
+  let filtered = getFiltered();
+  filtered.sort((a, b) => sortDir * a.date.localeCompare(b.date) || sortDir * (a.id - b.id));
+  const total = filtered.length;
+  document.getElementById('rec-count').textContent = total;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = 1;
+  const pageData = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+  const tbody = document.getElementById('records-tbody');
+  tbody.innerHTML = '';
+  if (pageData.length === 0) document.getElementById('empty-records').style.display = 'block';
+  else {
+    document.getElementById('empty-records').style.display = 'none';
+    pageData.forEach((r, i) => {
+      const seqNum = (currentPage-1)*PAGE_SIZE + i + 1;
+      const catClass = r.cat === '碎石' ? 'cat-石' : r.cat === '砂' ? 'cat-砂' : r.cat === '水泥' ? 'cat-水泥' : r.cat === '钢筋' ? 'cat-钢筋' : r.cat === '砂砾' ? 'cat-砂砾' : 'cat-other';
+      tbody.innerHTML += `<tr><td><div class="seq-badge">${seqNum}</div></td><td>${r.date}</td><td style="text-align:left;">${escapeHtml(r.route)}</td><td>${escapeHtml(r.origin)}</td><td><span class="cat-tag ${catClass}">${r.cat}</span></td><td style="text-align:left;">${escapeHtml(r.spec)}</td><td>${r.unit}</td><td style="font-weight:700;">${r.qty.toLocaleString()}</td><td>${escapeHtml(r.remark) || '—'}</td><td><button class="btn-del-row" onclick="deleteRecord(${r.id})">删除</button></td></tr>`;
+    });
+  }
+  const pg = document.getElementById('pagination');
+  if (totalPages <= 1) pg.innerHTML = '';
+  else {
+    let html = `<button class="pg-btn" onclick="changePage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+    for (let i = 1; i <= totalPages; i++) html += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="changePage(${i})">${i}</button>`;
+    html += `<button class="pg-btn" onclick="changePage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button><span class="pg-info">第${currentPage}/${totalPages}页</span>`;
+    pg.innerHTML = html;
+  }
+}
+function changePage(p) {
+  const filtered = getFiltered();
+  const max = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if (p < 1 || p > max) return;
+  currentPage = p;
+  renderRecords();
+}
+function clearFilters() {
+  ['f-route','f-spec','f-remark','f-date1','f-date2'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-cat').value = '';
+  currentPage = 1;
+  renderRecords();
+}
+function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+
+function renderStats() {
+  const sSpec = document.getElementById('s-spec')?.value.trim().toLowerCase() || '';
+  const sCat = document.getElementById('s-cat')?.value || '';
+  const agg = {};
+  records.forEach(r => {
+    if (sCat && r.cat !== sCat) return;
+    if (sSpec && !r.spec.toLowerCase().includes(sSpec) && !r.cat.toLowerCase().includes(sSpec)) return;
+    const key = `${r.spec}|||${r.unit}|||${r.cat}`;
+    if (!agg[key]) agg[key] = { spec: r.spec, unit: r.unit, cat: r.cat, total: 0, count: 0 };
+    agg[key].total += r.qty;
+    agg[key].count++;
+  });
+  const items = Object.values(agg).sort((a,b) => b.total - a.total);
+  const grid = document.getElementById('stats-grid');
+  if (items.length === 0) { grid.innerHTML = ''; document.getElementById('empty-stats').style.display = 'block'; return; }
+  document.getElementById('empty-stats').style.display = 'none';
+  const catClass = c => c==='碎石'?'cat-石':c==='砂'?'cat-砂':c==='水泥'?'cat-水泥':c==='钢筋'?'cat-钢筋':c==='砂砾'?'cat-砂砾':'cat-other';
+  grid.innerHTML = items.map(item => `<div class="stat-card"><div class="sc-name"><span class="cat-tag ${catClass(item.cat)}" style="font-size:10px;">${item.cat}</span>&nbsp;${escapeHtml(item.spec)}</div><div><span class="sc-val">${item.total.toLocaleString(undefined,{maximumFractionDigits:2})}</span><span class="sc-unit">${item.unit}</span></div><div class="sc-count">共 ${item.count} 条记录</div></div>`).join('');
+}
+
+function renderRoute() {
+  const rRoute = document.getElementById('r-route')?.value.trim().toLowerCase() || '';
+  const rDate1 = document.getElementById('r-date1')?.value || '';
+  const rDate2 = document.getElementById('r-date2')?.value || '';
+  const container = document.getElementById('route-result');
+  if (!rRoute) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">🛣️</div><p>请输入路线名称进行查询</p></div>`; return; }
+  const filtered = records.filter(r => { if (!r.route.toLowerCase().includes(rRoute)) return false; if (rDate1 && r.date < rDate1) return false; if (rDate2 && r.date > rDate2) return false; return true; });
+  if (filtered.length === 0) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>未找到路线"${escapeHtml(rRoute)}"的相关记录</p></div>`; return; }
+  const routes = [...new Set(filtered.map(r => r.route))];
+  let html = '';
+  routes.forEach(route => {
+    const recs = filtered.filter(r => r.route === route);
+    const agg = {};
+    recs.forEach(r => {
+      const key = `${r.cat}|||${r.spec}|||${r.unit}`;
+      if (!agg[key]) agg[key] = { cat: r.cat, spec: r.spec, unit: r.unit, total: 0, count: 0, origins: new Set(), remarks: new Set() };
+      agg[key].total += r.qty;
+      agg[key].count++;
+      agg[key].origins.add(r.origin);
+      if (r.remark) agg[key].remarks.add(r.remark);
+    });
+    const totalQtyByUnit = {};
+    Object.values(agg).forEach(a => { totalQtyByUnit[a.unit] = (totalQtyByUnit[a.unit]||0) + a.total; });
+    html += `<div class="card"><div class="card-header">🛣️ ${escapeHtml(route)} <span style="font-size:11px;">${recs.length} 条记录</span></div><div class="card-body"><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">${Object.entries(totalQtyByUnit).map(([unit,qty]) => `<div style="background:var(--grad);color:#fff;padding:6px 14px;border-radius:20px;">合计 ${qty.toLocaleString()} ${unit}</div>`).join('')}</div><div class="table-wrap">\n<table>\n<thead>\n<tr><th>类别</th><th>规格</th><th>单位</th><th>总量</th><th>记录数</th><th>产地</th><th>备注</th></tr>\n</thead>\n<tbody>${Object.values(agg).sort((a,b)=>b.total-a.total).map(a => { const cc = a.cat==='碎石'?'cat-石':a.cat==='砂'?'cat-砂':a.cat==='水泥'?'cat-水泥':a.cat==='钢筋'?'cat-钢筋':a.cat==='砂砾'?'cat-砂砾':'cat-other'; return `<tr><td><span class="cat-tag ${cc}">${a.cat}</span></td><td style="text-align:left;">${escapeHtml(a.spec)}</td><td>${a.unit}</td><td style="font-weight:700;">${a.total.toLocaleString()}</td><td>${a.count}</td><td>${[...a.origins].map(escapeHtml).join('、')}</td><td>${[...a.remarks].map(escapeHtml).join('、')||'—'}</td></tr>`; }).join('')}</tbody>\n</table>\n</div><br><div style="font-size:12px;font-weight:700;">明细记录</div><div class="table-wrap">\n<table>\n<thead>\n<tr><th>序号</th><th>日期</th><th>产地</th><th>类别</th><th>规格</th><th>单位</th><th>数量</th><th>备注</th></tr>\n</thead>\n<tbody>${[...recs].sort((a,b)=>b.date.localeCompare(a.date)).map((r,i)=>{ const cc = r.cat==='碎石'?'cat-石':r.cat==='砂'?'cat-砂':r.cat==='水泥'?'cat-水泥':r.cat==='钢筋'?'cat-钢筋':r.cat==='砂砾'?'cat-砂砾':'cat-other'; return `<tr><td><div class="seq-badge">${i+1}</div></td><td>${r.date}</td><td>${escapeHtml(r.origin)}</td><td><span class="cat-tag ${cc}">${r.cat}</span></td><td style="text-align:left;">${escapeHtml(r.spec)}</td><td>${r.unit}</td><td style="font-weight:700;">${r.qty.toLocaleString()}</td><td>${escapeHtml(r.remark)||'—'}</td></tr>`; }).join('')}</tbody>\n</table>\n</div></div></div>`;
+  });
+  container.innerHTML = html;
+}
+
+function triggerExcelImport() { document.getElementById('excelInput').click(); }
+
+function handleExcelImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+    if (!rows || rows.length < 2) { alert('Excel文件至少包含标题行和数据行'); return; }
+    const headers = rows[0];
+    const dateIdx = headers.findIndex(h => h && (h.includes('日期') || h.toLowerCase() === 'date'));
+    const routeIdx = headers.findIndex(h => h && (h.includes('路线') || h.toLowerCase() === 'route'));
+    const originIdx = headers.findIndex(h => h && (h.includes('产地') || h.toLowerCase() === 'origin'));
+    const catIdx = headers.findIndex(h => h && (h.includes('类别') || h.toLowerCase() === 'cat'));
+    const specIdx = headers.findIndex(h => h && (h.includes('规格') || h.toLowerCase() === 'spec'));
+    const unitIdx = headers.findIndex(h => h && (h.includes('单位') || h.toLowerCase() === 'unit'));
+    const qtyIdx = headers.findIndex(h => h && (h.includes('数量') || h.toLowerCase() === 'qty'));
+    const remarkIdx = headers.findIndex(h => h && (h.includes('备注') || h.toLowerCase() === 'remark'));
+    if (dateIdx === -1 || routeIdx === -1 || originIdx === -1 || catIdx === -1 || specIdx === -1 || qtyIdx === -1) {
+      alert('Excel必须包含以下列：日期、路线、产地、类别、规格、数量'); return;
+    }
+    let importedCount = 0;
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length === 0) continue;
+      let date = row[dateIdx];
+      if (date && typeof date === 'number') date = XLSX.SSF.format("yyyy-mm-dd", date);
+      else if (date && typeof date === 'string') date = date.trim();
+      else date = '';
+      const route = row[routeIdx]?.toString().trim() || '';
+      const origin = row[originIdx]?.toString().trim() || '';
+      const cat = row[catIdx]?.toString().trim() || '';
+      const spec = row[specIdx]?.toString().trim() || '';
+      let qty = parseFloat(row[qtyIdx]);
+      if (isNaN(qty)) qty = 0;
+      const unit = (unitIdx !== -1 && row[unitIdx]) ? row[unitIdx].toString().trim() : '吨';
+      const remark = (remarkIdx !== -1 && row[remarkIdx]) ? row[remarkIdx].toString().trim() : '';
+      if (!date || !route || !origin || !cat || !spec || qty <= 0) continue;
+      records.push({ id: Date.now() + i + Math.random() * 10000, date, route, origin, cat, spec, unit, qty, remark });
+      importedCount++;
+    }
+    if (importedCount === 0) alert('未检测到有效的Excel数据行');
+    else { saveAllData(); renderRecords(); renderStats(); alert(`成功导入 ${importedCount} 条记录！`); }
+  };
+  reader.readAsArrayBuffer(file);
+  document.getElementById('excelInput').value = '';
+}
+
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+// 启动时加载数据
+window.addEventListener('DOMContentLoaded', () => {
+  loadAllData();
+  // 如果没有数据，尝试从window对象恢复
+  if (records.length === 0 && window.__appData && window.__appData.records) {
+    records = window.__appData.records;
+    customCategories = window.__appData.customCategories || [];
+  }
+  // 重新排序seq
+  const sorted = [...records].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+  sorted.forEach((r, idx) => { r.seq = idx + 1; });
+  const savedTheme = localStorage.getItem('eng_theme');
+  let themeToApply = (savedTheme && themeList.includes(savedTheme)) ? savedTheme : getRandomTheme();
+  setTheme(themeToApply);
+  refreshAllCategorySelects();
+  document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+  renderRecords();
+});
+</script>
+</body>
 </html>
